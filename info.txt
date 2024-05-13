@@ -1,4 +1,4 @@
 Wwise Differ
-Otherside Entertainment
+Otherside Entertainment Inc.
 Build: 20240513.113446
 Author: Jon Evans

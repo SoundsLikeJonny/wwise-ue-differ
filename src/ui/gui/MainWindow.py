@@ -119,6 +119,10 @@ class Ui_MainWindow(object):
 
         self.gridLayout_3.addWidget(self.pushButton_remove_selected_tree_widget_rows, 7, 1, 1, 1)
 
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_3.addItem(self.horizontalSpacer_2, 2, 4, 1, 1)
+
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(-1, -1, -1, 0)
@@ -158,7 +162,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.addLayout(self.horizontalLayout)
 
 
-        self.gridLayout_3.addLayout(self.verticalLayout, 0, 1, 1, 5)
+        self.gridLayout_3.addLayout(self.verticalLayout, 0, 1, 1, 6)
 
         self.label_2 = QLabel(self.page_main)
         self.label_2.setObjectName(u"label_2")
@@ -168,10 +172,12 @@ class Ui_MainWindow(object):
 
         self.line = QFrame(self.page_main)
         self.line.setObjectName(u"line")
+        self.line.setLineWidth(0)
+        self.line.setMidLineWidth(0)
         self.line.setFrameShape(QFrame.Shape.HLine)
         self.line.setFrameShadow(QFrame.Shadow.Sunken)
 
-        self.gridLayout_3.addWidget(self.line, 1, 1, 1, 5)
+        self.gridLayout_3.addWidget(self.line, 1, 1, 1, 6)
 
         self.pushButton_clear_tree = QPushButton(self.page_main)
         self.pushButton_clear_tree.setObjectName(u"pushButton_clear_tree")
@@ -183,7 +189,14 @@ class Ui_MainWindow(object):
         self.pushButton_refresh.setObjectName(u"pushButton_refresh")
         self.pushButton_refresh.setEnabled(False)
 
-        self.gridLayout_3.addWidget(self.pushButton_refresh, 7, 5, 1, 1)
+        self.gridLayout_3.addWidget(self.pushButton_refresh, 7, 6, 1, 1)
+
+        self.pushButton = QPushButton(self.page_main)
+        self.pushButton.setObjectName(u"pushButton")
+        sizePolicy.setHeightForWidth(self.pushButton.sizePolicy().hasHeightForWidth())
+        self.pushButton.setSizePolicy(sizePolicy)
+
+        self.gridLayout_3.addWidget(self.pushButton, 2, 6, 1, 1)
 
         self.treeWidget_wwise_info = QTreeWidget(self.page_main)
         self.treeWidget_wwise_info.setObjectName(u"treeWidget_wwise_info")
@@ -193,7 +206,7 @@ class Ui_MainWindow(object):
         self.treeWidget_wwise_info.setSelectionMode(QAbstractItemView.ContiguousSelection)
         self.treeWidget_wwise_info.setSortingEnabled(True)
 
-        self.gridLayout_3.addWidget(self.treeWidget_wwise_info, 5, 1, 1, 5)
+        self.gridLayout_3.addWidget(self.treeWidget_wwise_info, 5, 1, 1, 6)
 
         self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -206,18 +219,12 @@ class Ui_MainWindow(object):
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_3.addItem(self.horizontalSpacer, 7, 4, 1, 1)
+        self.gridLayout_3.addItem(self.horizontalSpacer, 7, 5, 1, 1)
 
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.pushButton_browse_select_ak_event_folder = QPushButton(self.page_main)
+        self.pushButton_browse_select_ak_event_folder.setObjectName(u"pushButton_browse_select_ak_event_folder")
 
-        self.gridLayout_3.addItem(self.horizontalSpacer_2, 2, 3, 1, 1)
-
-        self.pushButton = QPushButton(self.page_main)
-        self.pushButton.setObjectName(u"pushButton")
-        sizePolicy.setHeightForWidth(self.pushButton.sizePolicy().hasHeightForWidth())
-        self.pushButton.setSizePolicy(sizePolicy)
-
-        self.gridLayout_3.addWidget(self.pushButton, 2, 5, 1, 1)
+        self.gridLayout_3.addWidget(self.pushButton_browse_select_ak_event_folder, 2, 3, 1, 1)
 
         self.stackedWidget.addWidget(self.page_main)
         self.page = QWidget()
@@ -311,13 +318,20 @@ class Ui_MainWindow(object):
         self.radioButton_theme_default.setText(QCoreApplication.translate("MainWindow", u"Default", None))
         self.radioButton_theme_ose.setText(QCoreApplication.translate("MainWindow", u"OSE (Dark grey w/ Cyan)", None))
         self.pushButton_remove_selected_tree_widget_rows.setText(QCoreApplication.translate("MainWindow", u"Remove Selected", None))
-        self.wwise_status_refresh.setText(QCoreApplication.translate("MainWindow", u"Refresh", None))
-        self.label.setText(QCoreApplication.translate("MainWindow", u"Wwise Status: ", None))
+        self.wwise_status_refresh.setText(QCoreApplication.translate("MainWindow", u"Refresh Connection", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"WAAPI Status: ", None))
         self.wwise_status.setText(QCoreApplication.translate("MainWindow", u"NO WWISE PROJECT OPEN", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"AkEvents Folder In Unreal Engine", None))
         self.pushButton_clear_tree.setText(QCoreApplication.translate("MainWindow", u"Clear Table", None))
         self.pushButton_refresh.setText(QCoreApplication.translate("MainWindow", u"Refresh", None))
+#if QT_CONFIG(tooltip)
+        self.pushButton.setToolTip(QCoreApplication.translate("MainWindow", u"Populate the table with info", None))
+#endif // QT_CONFIG(tooltip)
         self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Diff Against UE Folder", None))
+#if QT_CONFIG(tooltip)
+        self.pushButton_browse_select_ak_event_folder.setToolTip(QCoreApplication.translate("MainWindow", u"Select the Ak Events folder in your Unreal Engine project", None))
+#endif // QT_CONFIG(tooltip)
+        self.pushButton_browse_select_ak_event_folder.setText(QCoreApplication.translate("MainWindow", u"Browse...", None))
         self.menuInfo.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menuHelp.setTitle(QCoreApplication.translate("MainWindow", u"Help", None))
         self.menuView.setTitle(QCoreApplication.translate("MainWindow", u"View", None))

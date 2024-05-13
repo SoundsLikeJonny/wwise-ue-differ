@@ -96,6 +96,11 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         self.pushButton_to_main_page.pressed.connect(self.open_main_page)
         self.pushButton_remove_selected_tree_widget_rows.pressed.connect(self.remove_tree_widget_rows)
         self.pushButton_refresh.pressed.connect(self.diff_q_tree_widget_to_wwise_objects)
+        self.pushButton_browse_select_ak_event_folder.pressed.connect(self.select_unreal_wwise_ak_events_path)
+
+        self.pushButton_remove_selected_tree_widget_rows.hide()
+        self.pushButton_clear_tree.hide()
+        self.pushButton_refresh.hide()
 
         """
         #
@@ -337,6 +342,11 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
 
             if item.checkState(0):
                 event_name = item.data(2, Qt.DisplayRole)
+
+    def select_unreal_wwise_ak_events_path(self):
+        result = QFileDialog.getExistingDirectory(self, 'Select AK Events path in your Unreal Engine project')
+        self.lineEdit_ak_events_folder_in_ue.setText(result)
+        self.lineEdit_ak_events_folder_in_ue.setToolTip(result)
 
     def load_csv(self) -> None:
 

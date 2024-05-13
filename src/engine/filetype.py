@@ -46,5 +46,3 @@ class ProjectFile:
         if FileTypes.is_type_in_file(file):
             return True
         return False
-
-    # TODO:

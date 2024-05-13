@@ -117,7 +117,7 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         self.pushButton_load_csv.pressed.connect(self.load_csv)
         self.pushButton_to_main_page.pressed.connect(self.open_main_page)
         self.pushButton_overrides_to_main_page.pressed.connect(self.open_main_page)
-        self.pushButton_main_page_to_overrides.pressed.connect(self.open_overrides_page)
+        # self.pushButton_main_page_to_overrides.pressed.connect(self.open_overrides_page)
         self.pushButton_remove_selected_tree_widget_rows.pressed.connect(self.remove_tree_widget_rows)
         self.pushButton_refresh.pressed.connect(self.diff_q_tree_widget_to_wwise_objects)
 

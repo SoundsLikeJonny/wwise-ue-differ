@@ -4,17 +4,17 @@ import dataclasses
 @dataclasses.dataclass
 class Info:
     NOTIFICATION_TIME: int = 50
-    PROJECT_TITLE: str = 'Wwise Differ'
-    COMPANY: str = ''
+    PROJECT_TITLE: str = 'Wwise Unreal AkEvent Differ'
+    COMPANY: str = 'Otherside Entertainment'
     RESOURCES_PATH: str = 'resources'
     ICON_PATH: str = f'{RESOURCES_PATH}/ose_favicon.png'
     SPLASH_PATH: str = f'{RESOURCES_PATH}/otherside-logo.png'
-    DOCS_LINK: str = ''
+    DOCS_LINK: str = 'https://otherside.atlassian.net/wiki/spaces/TVT/pages/3372482581/Wwise+Unreal+AkEvent+Differ'
 
 
 @dataclasses.dataclass
 class FileTypes:
-    PROJECT: str = '.wwdif'
+    PROJECT: str = '.wwuedif'
     DATA: str = '.dif_dat'
     PREFS: str = '.prefs'
 

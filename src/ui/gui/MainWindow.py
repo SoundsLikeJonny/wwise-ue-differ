@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'MainWindow.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.4.1
+## Created by: Qt User Interface Compiler version 6.7.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -60,7 +60,7 @@ class Ui_MainWindow(object):
         self.gridLayout_4.setObjectName(u"gridLayout_4")
         self.pushButton_to_main_page = QPushButton(self.page_preferences)
         self.pushButton_to_main_page.setObjectName(u"pushButton_to_main_page")
-        sizePolicy = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Fixed)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.pushButton_to_main_page.sizePolicy().hasHeightForWidth())
@@ -68,7 +68,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_4.addWidget(self.pushButton_to_main_page, 0, 0, 1, 1)
 
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_4.addItem(self.verticalSpacer, 4, 0, 1, 1)
 
@@ -77,7 +77,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_4.addWidget(self.checkBox_keep_app_open, 2, 0, 1, 1)
 
-        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_4.addItem(self.horizontalSpacer_3, 0, 1, 1, 1)
 
@@ -110,18 +110,18 @@ class Ui_MainWindow(object):
         self.page_main.setObjectName(u"page_main")
         self.gridLayout_3 = QGridLayout(self.page_main)
         self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_3.addItem(self.horizontalSpacer_4, 4, 2, 1, 1)
 
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_3.addItem(self.horizontalSpacer_2, 4, 6, 1, 1)
 
         self.line = QFrame(self.page_main)
         self.line.setObjectName(u"line")
-        self.line.setFrameShape(QFrame.HLine)
-        self.line.setFrameShadow(QFrame.Sunken)
+        self.line.setFrameShape(QFrame.Shape.HLine)
+        self.line.setFrameShadow(QFrame.Shadow.Sunken)
 
         self.gridLayout_3.addWidget(self.line, 1, 1, 1, 10)
 
@@ -144,7 +144,7 @@ class Ui_MainWindow(object):
 
         self.label_5 = QLabel(self.page_main)
         self.label_5.setObjectName(u"label_5")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Preferred)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.label_5.sizePolicy().hasHeightForWidth())
@@ -238,7 +238,7 @@ class Ui_MainWindow(object):
 
         self.wwise_status = QLabel(self.page_main)
         self.wwise_status.setObjectName(u"wwise_status")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Ignored)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Ignored)
         sizePolicy2.setHorizontalStretch(4)
         sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.wwise_status.sizePolicy().hasHeightForWidth())
@@ -248,7 +248,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addWidget(self.wwise_status)
 
-        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer_8)
 
@@ -274,7 +274,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_5.addWidget(self.label_30, 2, 0, 1, 1)
 
-        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_5.addItem(self.horizontalSpacer_5, 0, 1, 1, 1)
 
@@ -386,7 +386,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_2.addWidget(self.label_2)
 
-        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_2.addItem(self.verticalSpacer_2)
 
@@ -459,7 +459,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_4.addWidget(self.label_3)
 
-        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_4.addItem(self.verticalSpacer_3)
 
@@ -521,7 +521,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_5.addWidget(self.groupBox_override_soundbankfolder_mission)
 
-        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_5.addItem(self.verticalSpacer_4)
 
@@ -533,7 +533,7 @@ class Ui_MainWindow(object):
 
         self.pushButton_overrides_to_main_page = QPushButton(self.page)
         self.pushButton_overrides_to_main_page.setObjectName(u"pushButton_overrides_to_main_page")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Ignored, QSizePolicy.Fixed)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Fixed)
         sizePolicy3.setHorizontalStretch(0)
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.pushButton_overrides_to_main_page.sizePolicy().hasHeightForWidth())
@@ -541,11 +541,11 @@ class Ui_MainWindow(object):
 
         self.gridLayout_5.addWidget(self.pushButton_overrides_to_main_page, 0, 0, 1, 1)
 
-        self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_5.addItem(self.verticalSpacer_5, 4, 0, 1, 1)
 
-        self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_5.addItem(self.horizontalSpacer_6, 1, 0, 1, 2)
 
@@ -559,7 +559,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 947, 22))
+        self.menubar.setGeometry(QRect(0, 0, 947, 21))
         self.menuInfo = QMenu(self.menubar)
         self.menuInfo.setObjectName(u"menuInfo")
         self.menuHelp = QMenu(self.menubar)
@@ -677,7 +677,7 @@ class Ui_MainWindow(object):
         self.label_29.setText(QCoreApplication.translate("MainWindow", u"\u2193", None))
         self.groupBox_override_actormixer_mission.setTitle(QCoreApplication.translate("MainWindow", u"Override Mission Actor-Mixer", None))
         self.lineEdit_override_actormixer_mission.setText("")
-        self.lineEdit_override_actormixer_mission.setPlaceholderText(QCoreApplication.translate("MainWindow", u"San04b", None))
+        self.lineEdit_override_actormixer_mission.setPlaceholderText("")
         self.label_28.setText(QCoreApplication.translate("MainWindow", u"\u2193", None))
         self.groupBox_override_actormixer_persona.setTitle(QCoreApplication.translate("MainWindow", u"Override Persona Actor-Mixer", None))
         self.lineEdit_override_actormixer_persona.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Ryana", None))
@@ -691,7 +691,7 @@ class Ui_MainWindow(object):
         self.lineEdit_override_eventfolder_parent.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Mission", None))
         self.label_23.setText(QCoreApplication.translate("MainWindow", u"\u2193", None))
         self.groupBox_override_eventfolder_mission.setTitle(QCoreApplication.translate("MainWindow", u"Override Mission Folder", None))
-        self.lineEdit_override_eventfolder_mission.setPlaceholderText(QCoreApplication.translate("MainWindow", u"San04b", None))
+        self.lineEdit_override_eventfolder_mission.setPlaceholderText("")
         self.label_22.setText(QCoreApplication.translate("MainWindow", u"\u2193", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"[Name] Event", None))
         self.groupBox_soundbanks.setTitle(QCoreApplication.translate("MainWindow", u"SoundBanks", None))
@@ -702,7 +702,7 @@ class Ui_MainWindow(object):
         self.lineEdit_override_soundbankfolder_parent.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Mission", None))
         self.label_25.setText(QCoreApplication.translate("MainWindow", u"\u2193", None))
         self.groupBox_override_soundbankfolder_mission.setTitle(QCoreApplication.translate("MainWindow", u"Override Mission Soundbank", None))
-        self.lineEdit_override_soundbankfolder_mission.setPlaceholderText(QCoreApplication.translate("MainWindow", u"San04b", None))
+        self.lineEdit_override_soundbankfolder_mission.setPlaceholderText("")
         self.pushButton_overrides_to_main_page.setText(QCoreApplication.translate("MainWindow", u"<-", None))
         self.menuInfo.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menuHelp.setTitle(QCoreApplication.translate("MainWindow", u"Help", None))

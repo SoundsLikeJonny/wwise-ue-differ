@@ -45,8 +45,8 @@ for path in glob.glob('.\\resources\\*.png'):
 for path in glob.glob('.\\resources\\*.ico'):
         analysis_data.append((path, '.\\resources\\'))
 
-for path in glob.glob('./src/ui/gui/*.ui'):
-        analysis_data.append((path, './src/ui/gui/'))
+# for path in glob.glob('./src/ui/gui/*.ui'):
+#         analysis_data.append((path, './src/ui/gui/'))
 
 analysis_data = analysis_data + [('./info.txt', './')]
 print(analysis_data)

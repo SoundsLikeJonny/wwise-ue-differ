@@ -9,7 +9,7 @@ def main():
     Created in UCS Voice Naming Tool\\src\\ui\\gui
     """
 
-    path_to_gui = Path().joinpath(os.getcwd(), 'src\\ui\\gui')
+    path_to_gui = Path().joinpath(os.getcwd(), 'gui')
 
     print(f"""
     #################

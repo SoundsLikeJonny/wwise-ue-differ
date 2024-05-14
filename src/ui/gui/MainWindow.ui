@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>947</width>
-    <height>843</height>
+    <width>791</width>
+    <height>616</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialogue Importer</string>
+   <string>Wwise Unreal AkEvent Differ</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -114,7 +114,7 @@
          </widget>
          <widget class="QWidget" name="page_main">
           <layout class="QGridLayout" name="gridLayout_3">
-           <item row="7" column="1">
+           <item row="11" column="1">
             <widget class="QPushButton" name="pushButton_remove_selected_tree_widget_rows">
              <property name="enabled">
               <bool>false</bool>
@@ -136,96 +136,30 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="4">
-            <spacer name="horizontalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+           <item row="5" column="4">
+            <widget class="QPushButton" name="pushButton_browse_select_ak_event_folder">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
+             <property name="toolTip">
+              <string>Select the Ak Events folder in your Unreal Engine project</string>
              </property>
-            </spacer>
+             <property name="text">
+              <string>Browse...</string>
+             </property>
+            </widget>
            </item>
-           <item row="0" column="1" colspan="6">
-            <layout class="QVBoxLayout" name="verticalLayout">
-             <property name="bottomMargin">
-              <number>0</number>
-             </property>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout">
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QPushButton" name="wwise_status_refresh">
-                 <property name="text">
-                  <string>Refresh Connection</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="label">
-                 <property name="font">
-                  <font>
-                   <weight>75</weight>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>WAAPI Status: </string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="wwise_status">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
-                   <horstretch>4</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>172</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>120</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>NO WWISE PROJECT OPEN</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer_8">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeType">
-                  <enum>QSizePolicy::Expanding</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </item>
-           <item row="2" column="1">
+           <item row="5" column="1">
             <widget class="QLabel" name="label_2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="text">
               <string>AkEvents Folder In Unreal Engine</string>
              </property>
@@ -234,7 +168,10 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="1" colspan="6">
+           <item row="8" column="1" colspan="5">
+            <widget class="QListWidget" name="listWidget_ak_events"/>
+           </item>
+           <item row="1" column="1" colspan="5">
             <widget class="Line" name="line">
              <property name="lineWidth">
               <number>0</number>
@@ -247,7 +184,7 @@
              </property>
             </widget>
            </item>
-           <item row="7" column="2">
+           <item row="11" column="2">
             <widget class="QPushButton" name="pushButton_clear_tree">
              <property name="enabled">
               <bool>false</bool>
@@ -257,7 +194,7 @@
              </property>
             </widget>
            </item>
-           <item row="7" column="6">
+           <item row="11" column="5">
             <widget class="QPushButton" name="pushButton_refresh">
              <property name="enabled">
               <bool>false</bool>
@@ -267,8 +204,8 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="6">
-            <widget class="QPushButton" name="pushButton_diff_against_ue_folder">
+           <item row="5" column="5">
+            <widget class="QPushButton" name="pushButton_diff_against_wwise_project">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -279,46 +216,109 @@
               <string>Populate the table with info</string>
              </property>
              <property name="text">
-              <string>Diff Against UE Folder</string>
+              <string>Diff Against Wwise Project</string>
              </property>
             </widget>
            </item>
-           <item row="5" column="1" colspan="6">
-            <widget class="QTreeWidget" name="treeWidget_wwise_info">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="autoFillBackground">
-              <bool>false</bool>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Plain</enum>
-             </property>
-             <property name="selectionMode">
-              <enum>QAbstractItemView::ContiguousSelection</enum>
-             </property>
-             <property name="sortingEnabled">
-              <bool>true</bool>
+           <item row="2" column="1" colspan="5">
+            <widget class="Line" name="line_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
-           <item row="6" column="2">
+           <item row="0" column="1" colspan="5">
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QPushButton" name="wwise_status_refresh">
+               <property name="text">
+                <string>Refresh Connection</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>WAAPI Status: </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="wwise_status">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
+                 <horstretch>4</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>172</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>120</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>NO WWISE PROJECT OPEN</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_8">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Expanding</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item row="5" column="2" colspan="2">
+            <widget class="QLineEdit" name="lineEdit_ak_events_folder_in_ue">
+             <property name="toolTip">
+              <string>For example [Path]/[To]/Content/Audio/Events</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1" colspan="5">
             <spacer name="verticalSpacer_2">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
              <property name="sizeHint" stdset="0">
               <size>
                <width>20</width>
-               <height>40</height>
+               <height>5</height>
               </size>
              </property>
             </spacer>
            </item>
-           <item row="2" column="2">
-            <widget class="QLineEdit" name="lineEdit_ak_events_folder_in_ue"/>
-           </item>
-           <item row="7" column="5">
+           <item row="11" column="3">
             <spacer name="horizontalSpacer">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -331,15 +331,56 @@
              </property>
             </spacer>
            </item>
-           <item row="2" column="3">
-            <widget class="QPushButton" name="pushButton_browse_select_ak_event_folder">
-             <property name="toolTip">
-              <string>Select the Ak Events folder in your Unreal Engine project</string>
+           <item row="10" column="1">
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <property name="bottomMargin">
+              <number>0</number>
              </property>
-             <property name="text">
-              <string>Browse...</string>
-             </property>
-            </widget>
+             <item>
+              <widget class="QLabel" name="label_3">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Number of Events in Wwise project: </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_num_events_in_wwise_project">
+               <property name="text">
+                <string>0</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="10" column="2">
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QLabel" name="label_4">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Number of Ak Events in Unreal: </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_num_events_in_ue_project">
+               <property name="text">
+                <string>0</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
@@ -358,7 +399,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>947</width>
+     <width>791</width>
      <height>21</height>
     </rect>
    </property>
@@ -459,22 +500,5 @@
   </action>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>pushButton_clear_tree</sender>
-   <signal>pressed()</signal>
-   <receiver>treeWidget_wwise_info</receiver>
-   <slot>clear()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>110</x>
-     <y>854</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>112</x>
-     <y>319</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

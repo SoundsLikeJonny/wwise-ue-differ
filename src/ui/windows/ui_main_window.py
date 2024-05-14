@@ -1,3 +1,4 @@
+import glob
 import webbrowser
 from pathlib import Path
 
@@ -20,10 +21,13 @@ from PySide6.QtWidgets import (
     QTreeWidget,
     QStackedWidget,
     QGroupBox,
-    QApplication
+    QApplication,
+    QDialog, QLayout, QVBoxLayout, QLabel, QListWidgetItem
 )
 
 from pandas import DataFrame
+
+import project_info
 from ui.theme import theme
 
 from engine.filetype import ProjectFile
@@ -65,17 +69,16 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         self.PREFERENCES_FILE = self.get_prefs_path()
         self.PREFERENCES_OBJECTS = [
             self.checkBox_keep_app_open,
-            self.treeWidget_wwise_info,
+            self.listWidget_ak_events,
             self.stackedWidget,
             self.radioButton_theme_ose,
             self.checkBox_use_persistent_data,
             self.lineEdit_ak_events_folder_in_ue
         ]
 
-        self.treeWidget_wwise_info.clear()
+        self.listWidget_ak_events.clear()
 
         self.load_prefs()
-        self.resize_tree()
 
         self.notify_on_close: bool = self.checkBox_keep_app_open.isChecked()
         self.splash: QSplashScreen = QSplashScreen()
@@ -97,6 +100,7 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         self.pushButton_remove_selected_tree_widget_rows.pressed.connect(self.remove_tree_widget_rows)
         self.pushButton_refresh.pressed.connect(self.diff_q_tree_widget_to_wwise_objects)
         self.pushButton_browse_select_ak_event_folder.pressed.connect(self.select_unreal_wwise_ak_events_path)
+        self.pushButton_diff_against_wwise_project.pressed.connect(self.diff_ue_ak_events_folder_against_wwise_events)
 
         self.pushButton_remove_selected_tree_widget_rows.hide()
         self.pushButton_clear_tree.hide()
@@ -135,7 +139,7 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         WWISE
         #
         """
-        self.wwise = None
+        self.wwise: WAAPI | None = None
         self.init_wwise()
 
     def __del__(self):
@@ -313,51 +317,87 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         if self.is_wwise_connected():
             result: str = self.wwise.get_project_info()['name']
             self.wwise_status.setText(f'Connected to project {result.title()}')
+            self.wwise_status.setToolTip('Connected')
             # self.populate_languages()
         else:
             self.wwise_status.setText('NO WWISE PROJECT OPEN')
+            self.wwise_status.setToolTip('Please open a Wwise project first')
 
     def is_wwise_connected(self) -> bool:
         try:
-            return self.wwise.is_connected
-        except Exception:
+            return self.wwise.is_connected()
+        except Exception as e:
+            print(e)
             return False
 
-    def resize_tree(self) -> None:
-        """
-        Resize the tree widget items
-        :return:
-        """
-        for index in range(self.treeWidget_wwise_info.columnCount()):
-            self.treeWidget_wwise_info.resizeColumnToContents(index)
+    # def resize_tree(self) -> None:
+    #     """
+    #     Resize the tree widget items
+    #     :return:
+    #     """
+    #     for index in range(self.treeWidget_wwise_info.columnCount()):
+    #         self.treeWidget_wwise_info.resizeColumnToContents(index)
 
-    def update_wwise_selection(self) -> None:
-        """
-        Tells wwise to select
-        :return:
-        """
-        if self.treeWidget_wwise_info.currentItem() is not None and self.wwise is not None:
-            item: QTreeWidgetItem = self.treeWidget_wwise_info.currentItem()
-            self.wwise.select_wwise_object_from_path(item.text(3))
-
-            if item.checkState(0):
-                event_name = item.data(2, Qt.DisplayRole)
+    # def update_wwise_selection(self) -> None:
+    #     """
+    #     Tells wwise to select
+    #     :return:
+    #     """
+    #     if self.treeWidget_wwise_info.currentItem() is not None and self.wwise is not None:
+    #         item: QTreeWidgetItem = self.treeWidget_wwise_info.currentItem()
+    #         self.wwise.select_wwise_object_from_path(item.text(3))
+    #
+    #         if item.checkState(0):
+    #             event_name = item.data(2, Qt.DisplayRole)
 
     def select_unreal_wwise_ak_events_path(self):
         result = QFileDialog.getExistingDirectory(self, 'Select AK Events path in your Unreal Engine project')
-        self.lineEdit_ak_events_folder_in_ue.setText(result)
-        self.lineEdit_ak_events_folder_in_ue.setToolTip(result)
-
-    def load_csv(self) -> None:
-
-        result = QFileDialog.getOpenFileNames(self, "Select the CSV", self.wwise.get_root_path(), "CSV Files (*.csv)")
-        print('csv:', result)
-        if self.checkBox_clear_on_csv_loading.isChecked():
-            self.treeWidget_wwise_info.clear()
-
         if result:
-            for file in result[0]:
-                self.load_csv_no_prompt(file)
+            self.lineEdit_ak_events_folder_in_ue.setText(result)
+            self.lineEdit_ak_events_folder_in_ue.setToolTip(result)
+
+    def get_all_wwise_ak_events(self) -> list[str]:
+        ak_events: list[dict] = self.wwise.get_all_event_objects()
+        return [item.get('name') for item in ak_events]
+
+    def get_all_ue_ak_events(self, file_path_to_ak_events: str) -> list[str]:
+        path: Path = Path(file_path_to_ak_events)
+        if not path.exists():
+            self.display_invalid_folder_dialog(file_path_to_ak_events)
+            return []
+        return [Path(file).stem for file in glob.glob(str(path / '**' / '*.uasset'), recursive=True)]
+
+    def display_invalid_folder_dialog(self, folder: str):
+        dialog = QDialog(self, Qt.WindowType.Dialog)
+        dialog.setWindowTitle(f'Folder not found')
+        layout = QVBoxLayout(dialog)
+        layout.addWidget(QLabel(f'It appears folder {folder} doesn\'t exist'))
+        dialog.setLayout(layout)
+        dialog.show()
+
+    def diff_ue_ak_events_folder_against_wwise_events(self):
+        self.listWidget_ak_events.clear()
+        wwise_proj_ak_events: list[str] = self.get_all_wwise_ak_events()
+        ue_proj_ak_events: list[str] = self.get_all_ue_ak_events(self.lineEdit_ak_events_folder_in_ue.text())
+        self.label_num_events_in_wwise_project.setText(str(len(wwise_proj_ak_events)))
+        self.label_num_events_in_ue_project.setText(str(len(ue_proj_ak_events)))
+        for event in wwise_proj_ak_events:
+            item: QListWidgetItem = QListWidgetItem(event)
+            item.setBackground(QtGui.QColor('#7fc97f'))
+            if event not in ue_proj_ak_events:
+                item.setBackground(QtGui.QColor('#f0027f'))
+            self.listWidget_ak_events.addItem(item)
+
+    # def load_csv(self) -> None:
+    #
+    #     result = QFileDialog.getOpenFileNames(self, "Select the CSV", self.wwise.get_root_path(), "CSV Files (*.csv)")
+    #     print('csv:', result)
+    #     if self.checkBox_clear_on_csv_loading.isChecked():
+    #         self.treeWidget_wwise_info.clear()
+    #
+    #     if result:
+    #         for file in result[0]:
+    #             self.load_csv_no_prompt(file)
 
     def load_csv_no_prompt(self, filepath: str) -> DataFrame | None:
         """
@@ -394,17 +434,6 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
 
     def diff_q_tree_widget_to_wwise_objects(self):
         pass
-
-    @staticmethod
-    def is_str_bool(string: str) -> bool:
-        if string == 'True':
-            return True
-        return False
-
-    def populate_languages(self) -> None:
-        self.comboBox_languages.clear()
-        names = [item['name'] for item in self.wwise.get_languages()]
-        self.comboBox_languages.addItems(names)
 
     @staticmethod
     def get_parse_wav_import_file(paths: list) -> list:

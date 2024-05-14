@@ -412,9 +412,14 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
             print(e)
             return None
 
-        import_list = [list(i) for i in
-                       zip(data['Name'].values, data['SourcePath'].values,
-                           self.get_parse_wav_import_file(data['SourcePath'].values), data['Persona'].values)]
+        import_list = [
+            list(i) for i in
+            zip(
+                data['Name'].values, data['SourcePath'].values,
+                self.get_parse_wav_import_file(data['SourcePath'].values),
+                data['Persona'].values
+            )
+        ]
 
         self.populate_importing_table(import_list)
 

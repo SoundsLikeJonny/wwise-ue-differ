@@ -1,8 +1,8 @@
 import glob
 import webbrowser
 from pathlib import Path
-
 import pandas as pd
+from pandas import DataFrame
 from PySide6 import QtGui, QtWidgets, QtCore
 from PySide6.QtCore import (
     Qt,
@@ -10,7 +10,6 @@ from PySide6.QtCore import (
     Signal,
     QThreadPool,
 )
-
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
     QMainWindow,
@@ -22,14 +21,13 @@ from PySide6.QtWidgets import (
     QStackedWidget,
     QGroupBox,
     QApplication,
-    QDialog, QLayout, QVBoxLayout, QLabel, QListWidgetItem
+    QDialog,
+    QVBoxLayout,
+    QLabel,
+    QListWidgetItem
 )
 
-from pandas import DataFrame
-
-import project_info
 from ui.theme import theme
-
 from engine.filetype import ProjectFile
 from project_info import Info, FileTypes
 from src.engine.wwise import (
@@ -357,6 +355,8 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
             self.lineEdit_ak_events_folder_in_ue.setToolTip(result)
 
     def get_all_wwise_ak_events(self) -> list[str]:
+        if not self.wwise.is_connected():
+            return []
         ak_events: list[dict] = self.wwise.get_all_event_objects()
         return [item.get('name') for item in ak_events]
 
@@ -370,7 +370,7 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
     def display_invalid_folder_dialog(self, folder: str):
         dialog = QDialog(self, Qt.WindowType.Dialog)
         dialog.setWindowTitle(f'Folder not found')
-        layout = QVBoxLayout(dialog)
+        layout = QVBoxLayout()
         layout.addWidget(QLabel(f'It appears folder {folder} doesn\'t exist'))
         dialog.setLayout(layout)
         dialog.show()

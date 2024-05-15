@@ -6,9 +6,11 @@ class Info:
     NOTIFICATION_TIME: int = 50
     PROJECT_TITLE: str = 'Wwise Unreal AkEvent Differ'
     COMPANY: str = 'Otherside Entertainment'
+    COPYRIGHT: str = 'Copyright (c) Otherside Entertainment 2024'
+    NOTICE: str = 'Original Wwise-Python Tool template provided by Jon Evans, Game Audio Tools.'
     RESOURCES_PATH: str = 'resources'
-    ICON_PATH: str = f'{RESOURCES_PATH}/ose_favicon.png'
-    SPLASH_PATH: str = f'{RESOURCES_PATH}/otherside-logo.png'
+    ICON_PATH: str = f':/{RESOURCES_PATH}/ose_favicon.png'
+    SPLASH_PATH: str = f':/{RESOURCES_PATH}/ose_splash.png'
     DOCS_LINK: str = 'https://otherside.atlassian.net/wiki/spaces/TVT/pages/3372482581/Wwise+Unreal+AkEvent+Differ'
 
 

@@ -10,7 +10,7 @@ from PySide6.QtCore import (
     Signal,
     QThreadPool,
 )
-from PySide6.QtGui import QIcon
+from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import (
     QMainWindow,
     QTreeWidgetItem,
@@ -38,6 +38,7 @@ from src.engine.wwise import (
 from src.ui.gui import MainWindow
 from src.ui.splash import show_splash
 from src.ui.windows.ui_progress_window import ProgressBarWindow
+import resources
 
 
 class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
@@ -71,7 +72,8 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
             self.stackedWidget,
             self.radioButton_theme_ose,
             self.checkBox_use_persistent_data,
-            self.lineEdit_ak_events_folder_in_ue
+            self.lineEdit_ak_events_folder_in_ue,
+            self.checkBox_only_show_invalid
         ]
 
         self.listWidget_ak_events.clear()
@@ -99,7 +101,10 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         self.pushButton_refresh.pressed.connect(self.diff_q_tree_widget_to_wwise_objects)
         self.pushButton_browse_select_ak_event_folder.pressed.connect(self.select_unreal_wwise_ak_events_path)
         self.pushButton_diff_against_wwise_project.pressed.connect(self.diff_ue_ak_events_folder_against_wwise_events)
+        self.pushButton_copy_list_to_clipboard.setIcon(QPixmap(':/resources/icons8-copy-50.png'))
+        self.pushButton_copy_list_to_clipboard.pressed.connect(self.copy_list_to_clipboard)
 
+        # Hidden
         self.pushButton_remove_selected_tree_widget_rows.hide()
         self.pushButton_clear_tree.hide()
         self.pushButton_refresh.hide()
@@ -383,10 +388,30 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         self.label_num_events_in_ue_project.setText(str(len(ue_proj_ak_events)))
         for event in wwise_proj_ak_events:
             item: QListWidgetItem = QListWidgetItem(event)
-            item.setBackground(QtGui.QColor('#7fc97f'))
+
+            # TODO: fix to highlight only the red when checked, and both otherwise
             if event not in ue_proj_ak_events:
-                item.setBackground(QtGui.QColor('#f0027f'))
-            self.listWidget_ak_events.addItem(item)
+                item.setBackground(QtGui.QColor(150, 0, 0))
+                self.listWidget_ak_events.addItem(item)
+            if not self.checkBox_only_show_invalid.isChecked():
+                self.listWidget_ak_events.addItem(item)
+
+            # if event not in ue_proj_ak_events:
+            #     item.setBackground(QtGui.QColor(150, 0, 0))
+            #     if self.checkBox_only_show_invalid.isChecked():
+            #         self.listWidget_ak_events.addItem(item)
+            #         continue
+            # if not self.checkBox_only_show_invalid.isChecked():
+            #     item.setBackground(QtGui.QColor(0, 150, 0))
+            #     self.listWidget_ak_events.addItem(item)
+
+    def copy_list_to_clipboard(self):
+        list_items: list[str] = [
+            self.listWidget_ak_events.item(index).text()
+            for index in
+            self.listWidget_ak_events.count()
+        ]
+        QApplication.clipboard().setText('\n'.join(list_items))
 
     # def load_csv(self) -> None:
     #
@@ -411,7 +436,6 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         except Exception as e:
             print(e)
             return None
-
         import_list = [
             list(i) for i in
             zip(
@@ -420,7 +444,6 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
                 data['Persona'].values
             )
         ]
-
         self.populate_importing_table(import_list)
 
     def populate_importing_table(self, import_list: list) -> None:

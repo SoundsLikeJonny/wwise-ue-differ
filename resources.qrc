@@ -1,0 +1,9 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource>
+        <file>resources/ose_favicon.png</file>
+        <file>resources/ose_splash.png</file>
+        <file>resources/otherside-logo.png</file>
+        <file>resources/icons8-copy-50.png</file>
+    </qresource>
+</RCC>

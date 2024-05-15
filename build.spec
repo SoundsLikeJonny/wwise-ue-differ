@@ -17,7 +17,9 @@ current_date_time = str(datetime.now().strftime("%Y_%m_%d-%H_%M_%S"))
 buildnumber = str(datetime.now().strftime("%Y%m%d.%H%M%S"))
 buildnumber = f'{Info.PROJECT_TITLE}\n' \
                 f'{Info.COMPANY}\n'\
-                f'Build: {buildnumber}\n'\
+                f'{Info.COPYRIGHT}\n'\
+                f'{Info.NOTICE}\n'\
+                f'Build Date: {buildnumber}\n'\
                 f'Author: Jon Evans'
 
 try:

@@ -1,4 +1,5 @@
 import glob
+import pathlib
 import webbrowser
 from pathlib import Path
 import pandas as pd
@@ -24,7 +25,7 @@ from PySide6.QtWidgets import (
     QDialog,
     QVBoxLayout,
     QLabel,
-    QListWidgetItem
+    QListWidgetItem, QDialogButtonBox
 )
 
 from ui.theme import theme
@@ -36,9 +37,11 @@ from src.engine.wwise import (
     Defaults
 )
 from src.ui.gui import MainWindow
-from src.ui.splash import show_splash
+from src.ui.splash import SplashScreen
 from src.ui.windows.ui_progress_window import ProgressBarWindow
 import resources
+
+pathlib.Path().cwd()
 
 
 class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
@@ -52,11 +55,14 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
     signal_theme_changed = Signal(QApplication)
     signal_app_stay_open_changed = Signal(QApplication)
     signal_close_progress_window = Signal()
+    signal_splash_screen_closed = Signal()
 
     def __init__(self, *args) -> None:
         """Initialize the main window, UI elements and necessary objects
         """
         super(UIMainWindow, self).__init__(*args)
+        self.confirm: QDialog = QDialog()
+        self.ak_events_to_delete: list[str] = []
         self.setupUi(self)
         self.threadpool = QThreadPool()
 
@@ -81,8 +87,8 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         self.load_prefs()
 
         self.notify_on_close: bool = self.checkBox_keep_app_open.isChecked()
-        self.splash: QSplashScreen = QSplashScreen()
-        self.show_splash_screen()
+        self.splash: SplashScreen = SplashScreen()
+        self.splash.signal_splash_screen_closed.connect(self.signal_splash_screen_closed.emit)
         self.tray = QSystemTrayIcon()
 
         self.setWindowIcon(QIcon(Info.ICON_PATH))
@@ -103,6 +109,7 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         self.pushButton_diff_against_wwise_project.pressed.connect(self.diff_ue_ak_events_folder_against_wwise_events)
         self.pushButton_copy_list_to_clipboard.setIcon(QPixmap(':/resources/icons8-copy-50.png'))
         self.pushButton_copy_list_to_clipboard.pressed.connect(self.copy_list_to_clipboard)
+        self.pushButton_delete_unused_ak_events.pressed.connect(self.confirm_delete_unused_ak_events)
 
         # Hidden
         self.pushButton_remove_selected_tree_widget_rows.hide()
@@ -186,7 +193,7 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         self.save_prefs()
 
     def show_splash_screen(self):
-        self.splash = show_splash()
+        self.splash = SplashScreen()
 
     def flag_wav_import_error(self, bad_file: str) -> None:
         self.wav_import_errors.append(bad_file)
@@ -382,28 +389,40 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
 
     def diff_ue_ak_events_folder_against_wwise_events(self):
         self.listWidget_ak_events.clear()
+        self.ak_events_to_delete.clear()
         wwise_proj_ak_events: list[str] = self.get_all_wwise_ak_events()
         ue_proj_ak_events: list[str] = self.get_all_ue_ak_events(self.lineEdit_ak_events_folder_in_ue.text())
         self.label_num_events_in_wwise_project.setText(str(len(wwise_proj_ak_events)))
         self.label_num_events_in_ue_project.setText(str(len(ue_proj_ak_events)))
         for event in wwise_proj_ak_events:
             item: QListWidgetItem = QListWidgetItem(event)
-
-            # TODO: fix to highlight only the red when checked, and both otherwise
             if event not in ue_proj_ak_events:
                 item.setBackground(QtGui.QColor(150, 0, 0))
+                self.ak_events_to_delete.append(event)
                 self.listWidget_ak_events.addItem(item)
             if not self.checkBox_only_show_invalid.isChecked():
                 self.listWidget_ak_events.addItem(item)
+        self.label_number_of_events_to_delete.setText(str(len(self.ak_events_to_delete)))
 
-            # if event not in ue_proj_ak_events:
-            #     item.setBackground(QtGui.QColor(150, 0, 0))
-            #     if self.checkBox_only_show_invalid.isChecked():
-            #         self.listWidget_ak_events.addItem(item)
-            #         continue
-            # if not self.checkBox_only_show_invalid.isChecked():
-            #     item.setBackground(QtGui.QColor(0, 150, 0))
-            #     self.listWidget_ak_events.addItem(item)
+    def confirm_delete_unused_ak_events(self) -> None:
+        if not self.wwise.is_connected():
+            return
+        self.confirm: QDialog = QDialog(self, Qt.WindowType.Dialog)
+        layout: QVBoxLayout = QVBoxLayout()
+        layout.addWidget(QLabel('Delete unused AK events?'))
+        buttons = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+        self.confirm.buttonBox = QDialogButtonBox(buttons)
+        self.confirm.buttonBox.accepted.connect(self.delete_unused_ak_events)
+        self.confirm.buttonBox.rejected.connect(self.confirm.close)
+        layout.addWidget(self.confirm.buttonBox)
+        self.confirm.setLayout(layout)
+        self.confirm.show()
+
+    def delete_unused_ak_events(self) -> None:
+        self.confirm.close()
+        for event in self.ak_events_to_delete:
+            print(f'Deleted: {event}')
+            self.wwise.delete_event(self.wwise.get_event_guid_from_name(event))
 
     def copy_list_to_clipboard(self):
         list_items: list[str] = [

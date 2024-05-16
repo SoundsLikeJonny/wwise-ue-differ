@@ -1,4 +1,6 @@
 Wwise Unreal AkEvent Differ
 Otherside Entertainment
-Build: 20240513.145818
+Copyright (c) Otherside Entertainment 2024
+Original Wwise-Python Tool template provided by Jon Evans, Game Audio Tools.
+Build Date: 20240515.162956
 Author: Jon Evans

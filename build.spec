@@ -7,9 +7,12 @@ from datetime import datetime
 import os
 from pathlib import Path
 from project_info import Info
+import resources
 
 
-icon_name = str(Path.joinpath(Path().absolute(), Info.ICON_PATH))
+icon_name = Path().absolute().__str__()
+icon_name = f'{icon_name}{Info.ICON_PATH[1:]}'
+print(icon_name)
 
 current_date_time = str(datetime.now().strftime("%Y_%m_%d-%H_%M_%S"))
 

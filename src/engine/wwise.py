@@ -57,9 +57,20 @@ class WAAPI(WaapiClient):
     def get_physical_folder_work_units(self) -> dict:
         return self.get_waql('$ from project where workunitType = "folder"')['return']
 
-    def get_physical_folder_work_units_name_list(self) -> dict:
+    def get_physical_folder_work_units_name_list(self) -> list:
         data_dict = self.get_physical_folder_work_units()
         return [item['name'] for item in data_dict]
+
+    def get_event_guid_from_name(self, event_name: str) -> str:
+        if (result := self.get_waql(f'$ from object "Event:{event_name}"')) is not None:
+            return result['return'][0]['id']
+        return ''
+
+    def delete_event(self, event: str) -> None:
+        object_args = {
+            "object": event
+        }
+        self.call('ak.wwise.core.object.delete', object_args)
 
     def get_actor_mixer_workunits(self):
         return self.get_waql('$ from object "Actor-Mixer Hierarchy" select children')

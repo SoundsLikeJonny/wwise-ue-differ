@@ -1,8 +1,8 @@
-#  Copyright 2024 Otherside Entertainment Inc.
+#  Copyright (c) 2024 Otherside Entertainment Inc.
 #
-#  Original Wwise-Python Tool Template provided by Jon Evans under Apache 2.0
-#  for the purposes of distributing an internal tool
-#  Copyright 2024 Jon Evans Audio
+#  The original Wwise-Python Tool Template and source code is provided by Jon Evans,
+#  Copyright 2024 (c) Jon Evans Audio under the Apache License, Version 2.0
+#  for the purposes of distributing internal tools
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
 import glob
 import pathlib
 import webbrowser
@@ -411,9 +412,9 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         ue_proj_ak_events: list[str] = self.get_all_ue_ak_events(self.lineEdit_ak_events_folder_in_ue.text())
         self.label_num_events_in_wwise_project.setText(str(len(wwise_proj_ak_events)))
         self.label_num_events_in_ue_project.setText(str(len(ue_proj_ak_events)))
-        for event in wwise_proj_ak_events:
+        for event in ue_proj_ak_events:
             item: QListWidgetItem = QListWidgetItem(event)
-            if event not in ue_proj_ak_events:
+            if event not in wwise_proj_ak_events:
                 item.setBackground(QtGui.QColor(150, 0, 0))
                 self.ak_events_to_delete.append(event)
                 self.listWidget_ak_events.addItem(item)
@@ -426,7 +427,10 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
             return
         self.confirm: QDialog = QDialog(self, Qt.WindowType.Dialog)
         layout: QVBoxLayout = QVBoxLayout()
-        layout.addWidget(QLabel('Delete unused AK events?'))
+        layout.addWidget(QLabel('Delete unused AK events?\nPlease be sure that you\'ve '
+                                'reconciled all ak events in Unreal.\nFailing to do so could cause some events '
+                                'to break the build, since there\'s a chance that the .uasset has a different name '
+                                'than the name used in Wwise'))
         buttons = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
         self.confirm.buttonBox = QDialogButtonBox(buttons)
         self.confirm.buttonBox.accepted.connect(self.delete_unused_ak_events)
@@ -645,7 +649,7 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
 
     @staticmethod
     def get_prefs_path() -> str:
-        file = f'dialogue_importer{FileTypes.PREFS}'
+        file = f'{Info.PROJECT_TITLE.lower()}{FileTypes.PREFS}'
         parent_path = Path().joinpath(Path().home(), Info.PROJECT_TITLE)
         parent_path.mkdir(exist_ok=True)
         parent_path = str(parent_path.joinpath(file))

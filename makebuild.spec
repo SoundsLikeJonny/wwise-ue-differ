@@ -1,10 +1,10 @@
 # -*- mode: python ; coding: utf-8 -*-
 #
-#  Copyright 2024 Otherside Entertainment Inc.
+#  Copyright (c) 2024 Otherside Entertainment Inc.
 #
-#  Original Wwise-Python Tool Template provided by Jon Evans under Apache 2.0
-#  for the purposes of distributing an internal tool
-#  Copyright 2024 Jon Evans Audio
+#  The original Wwise-Python Tool Template and source code is provided by Jon Evans,
+#  Copyright 2024 (c) Jon Evans Audio under the Apache License, Version 2.0
+#  for the purposes of distributing internal tools
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
 # Copy/Paste below into command prompt
 # C:\Users\[path]\PycharmProjects\[project]\venv\Scripts\pyinstaller.exe C:\Users\[path]\PycharmProjects\[project]\build.spec
 

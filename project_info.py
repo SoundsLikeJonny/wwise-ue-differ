@@ -1,8 +1,8 @@
-#  Copyright 2024 Otherside Entertainment Inc.
+#  Copyright (c) 2024 Otherside Entertainment Inc.
 #
-#  Original Wwise-Python Tool Template provided by Jon Evans under Apache 2.0
-#  for the purposes of distributing an internal tool
-#  Copyright 2024 Jon Evans Audio
+#  The original Wwise-Python Tool Template and source code is provided by Jon Evans,
+#  Copyright 2024 (c) Jon Evans Audio under the Apache License, Version 2.0
+#  for the purposes of distributing internal tools
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
 import dataclasses
 
 
@@ -24,7 +25,9 @@ class Info:
     PROJECT_TITLE: str = 'Wwise Unreal AkEvent Differ'
     COMPANY: str = 'Otherside Entertainment'
     COPYRIGHT: str = 'Copyright (c) Otherside Entertainment 2024'
-    NOTICE: str = 'Original Wwise-Python Tool template provided by Jon Evans, Game Audio Tools.'
+    NOTICE: str = 'The original Wwise-Python Tool Template and source code is provided by Jon Evans,\
+ Copyright 2024 (c) Jon Evans Audio under the Apache License, Version 2.0\
+ for the purposes of distributing internal tools'
     RESOURCES_PATH: str = 'resources'
     ICON_PATH: str = f':/{RESOURCES_PATH}/ose_favicon.png'
     SPLASH_PATH: str = f':/{RESOURCES_PATH}/ose_splash.png'

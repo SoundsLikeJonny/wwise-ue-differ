@@ -25,7 +25,7 @@ class Info:
     PROJECT_TITLE: str = 'Wwise Unreal AkEvent Differ'
     COMPANY: str = 'Otherside Entertainment'
     COPYRIGHT: str = 'Copyright (c) Otherside Entertainment 2024'
-    NOTICE: str = 'The original Wwise-Python Tool Template and source code is provided by Jon Evans,\
+    NOTICE: str = 'The original Wwise-Python Tool Template and source code is provided by Jon Evans,\n\
  Copyright 2024 (c) Jon Evans Audio under the Apache License, Version 2.0\
  for the purposes of distributing internal tools'
     RESOURCES_PATH: str = 'resources'

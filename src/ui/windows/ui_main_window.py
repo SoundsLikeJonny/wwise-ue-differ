@@ -15,19 +15,20 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
+import builtins
 import glob
 import pathlib
 import webbrowser
 from pathlib import Path
 import pandas as pd
+import pyperclip
 from pandas import DataFrame
 from PySide6 import QtGui, QtWidgets, QtCore
 from PySide6.QtCore import (
     Qt,
     Slot,
     Signal,
-    QThreadPool,
+    QThreadPool, QObject,
 )
 from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import (
@@ -80,6 +81,7 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         """
         super(UIMainWindow, self).__init__(*args)
         self.confirm: QDialog = QDialog()
+        self.ak_event_exclusions: list[str] = []
         self.ak_events_to_delete: list[str] = []
         self.setupUi(self)
         self.threadpool = QThreadPool()
@@ -97,10 +99,12 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
             self.radioButton_theme_ose,
             self.checkBox_use_persistent_data,
             self.lineEdit_ak_events_folder_in_ue,
-            self.checkBox_only_show_invalid
+            self.checkBox_only_show_invalid,
+            self.ak_event_exclusions
         ]
 
         self.listWidget_ak_events.clear()
+        self.listWidget_exclusions.clear()
 
         self.load_prefs()
 
@@ -121,18 +125,14 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         """
         self.wwise_status_refresh.pressed.connect(self.init_wwise)
         self.pushButton_to_main_page.pressed.connect(self.open_main_page)
-        self.pushButton_remove_selected_tree_widget_rows.pressed.connect(self.remove_tree_widget_rows)
-        self.pushButton_refresh.pressed.connect(self.diff_q_tree_widget_to_wwise_objects)
         self.pushButton_browse_select_ak_event_folder.pressed.connect(self.select_unreal_wwise_ak_events_path)
         self.pushButton_diff_against_wwise_project.pressed.connect(self.diff_ue_ak_events_folder_against_wwise_events)
         self.pushButton_copy_list_to_clipboard.setIcon(QPixmap(':/resources/icons8-copy-50.png'))
         self.pushButton_copy_list_to_clipboard.pressed.connect(self.copy_list_to_clipboard)
         self.pushButton_delete_unused_ak_events.pressed.connect(self.confirm_delete_unused_ak_events)
-
-        # Hidden
-        self.pushButton_remove_selected_tree_widget_rows.hide()
-        self.pushButton_clear_tree.hide()
-        self.pushButton_refresh.hide()
+        self.pushButton_to_exclusions_page.pressed.connect(self.open_second_page)
+        self.pushButton_go_to_main_page.pressed.connect(self.open_main_page)
+        self.pushButton_add_selection_to_exclusions.pressed.connect(self.add_selection_to_exclusions_list)
 
         """
         #
@@ -144,8 +144,6 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         self.actionPreferences.triggered.connect(self.open_preferences)
         self.actionMain_Window.triggered.connect(self.open_main_page)
         self.actionSave.triggered.connect(self.save_prefs)
-        # self.actionOverrides.triggered.connect(self.open_overrides_page)
-        self.actionRefresh_table.triggered.connect(self.diff_q_tree_widget_to_wwise_objects)
 
         """
         #
@@ -157,8 +155,6 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         self.signal_progress_bar_value[int].connect(self.update_progress_bar_value)
         self.signal_hide_progress_bar.connect(self.hide_progress_bar)
         self.signal_show_progress_bar.connect(self.show_progress_bar)
-        self.signal_disable_table.connect(self.disable_table)
-        self.signal_enable_table.connect(self.enable_table)
         self.signal_theme_changed[QApplication].connect(self.update_theme)
         self.signal_app_stay_open_changed[QApplication].connect(self.update_app_stay_open)
 
@@ -170,12 +166,10 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         self.wwise: WAAPI | None = None
         self.init_wwise()
 
-    def __del__(self):
-        pass
-
     ###############################
     # UIMainWindow CLASS METHODS
     ###############################
+
     @Slot(QApplication)
     def update_theme(self, app: QApplication) -> None:
         if self.radioButton_theme_ose.isChecked():
@@ -213,118 +207,6 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
     def show_splash_screen(self):
         self.splash = SplashScreen()
 
-    def flag_wav_import_error(self, bad_file: str) -> None:
-        self.wav_import_errors.append(bad_file)
-
-    def clear_import_errors(self) -> None:
-        self.wav_import_errors.clear()
-
-    # def threadeddd(self):
-    #     def decorator_threaded(func):
-    #         # print(f'Starting function "{func.__name__}" on new thread')
-    #         QThreadPool().start(func)
-    # 
-    #     return decorator_threaded
-
-    def threaded_create_dialogue_pipeline(self) -> None:
-        self.threadpool.start(self.create_dialogue_pipeline)
-
-    # noinspection DuplicatedCode
-    def create_dialogue_pipeline(self) -> None:
-        self.signal_show_progress_bar.emit()
-        self.signal_disable_table.emit()
-        if self.is_wwise_connected():
-            import_list = self.get_q_treewidget_as_list(self.treeWidget_wwise_info)
-            self.signal_progress_bar_maximum.emit(len(import_list))
-
-            count: int = 0
-            for name, file, parent, child, persona in import_list:
-                if not self.continue_importing:
-                    self.signal_close_progress_window.emit()
-                    return
-
-                self.signal_progress_bar_value.emit(count)
-                file: Path = Path().joinpath(self.wwise.get_originals_path(), 'Voices',
-                                             self.comboBox_languages.currentText(), file)
-                if not file.is_file() or not file.exists():
-                    self.flag_wav_import_error(str(file))
-
-                result: dict = self.create_actor_mixer_hierarchy(parent, child, persona, name, str(file))
-                event_guid: str = self.create_event_hierarchy(parent, child, name)
-                self.wwise.create_action_in_event(event_guid, result)
-
-                # if self.checkBox_generate_soundbanks.isChecked():
-                #     bank_guid: str = self.create_soundbank_hierarchy(parent, child)
-                #     result: dict = self.wwise.include_event_in_soundbank(bank_guid, event_guid)
-                count += 1
-        self.signal_enable_table.emit()
-        self.signal_hide_progress_bar.emit()
-
-    # noinspection DuplicatedCode
-    def create_soundbank_hierarchy(self, parent: str, child: str) -> str:
-        self.signal_progress_bar_message.emit(f'Creating Sounbank Structure: {parent}->{child}')
-        # if self.checkBox_use_overrides.isChecked():
-        #     if self.groupBox_override_soundbankfolder_parent.isChecked():
-        #         parent = self.lineEdit_override_soundbankfolder_parent.text()
-        #     if self.groupBox_override_soundbankfolder_mission.isChecked():
-        #         child = self.lineEdit_override_soundbankfolder_mission.text()
-
-        result = self.wwise.get_guid_soundbanks_hierarchy()
-        result = self.wwise.create_object(result, Defaults.WORK_UNIT, self.DIALOGUE_WORK_UNIT_STR)['id']
-        result = self.wwise.create_object(result, Defaults.FOLDER, parent)['id']
-        bank_guid = self.wwise.create_object(result, Defaults.SOUNDBANK, child, on_conflict='merge')['id']
-        return bank_guid
-
-    # noinspection DuplicatedCode
-    def create_event_hierarchy(self, parent: str, child: str, name: str) -> str:
-        self.signal_progress_bar_message.emit(f'Creating Event Structure: {parent}->{child}->{name}')
-        # if self.checkBox_use_overrides.isChecked():
-        #     if self.groupBox_override_eventfolder_parent.isChecked():
-        #         parent: str = self.lineEdit_override_eventfolder_parent.text()
-        #     if self.groupBox_override_eventfolder_mission.isChecked():
-        #         child: str = self.lineEdit_override_eventfolder_mission.text()
-
-        result: str = self.wwise.get_guid_events_hierarchy()
-        result: str = self.wwise.create_object(result, Defaults.WORK_UNIT, self.DIALOGUE_WORK_UNIT_STR)['id']
-        result: str = self.wwise.create_object(result, Defaults.FOLDER, parent)['id']
-        result: str = self.wwise.create_object(result, Defaults.FOLDER, child)['id']
-        event_guid: str = self.wwise.create_object(result, Defaults.EVENT, name)['id']
-        return event_guid
-
-    # noinspection DuplicatedCode
-    def create_actor_mixer_hierarchy(self, parent: str, child: str, persona: str, name: str, file: str) -> dict:
-        self.signal_progress_bar_message.emit(
-            f'Creating Event Structure: {parent}->{child}->{name}->{str(Path(file).name)}')
-        originals_import_path = f'Voices\\{self.comboBox_languages.currentText()}\\{parent}\\{child}\\'
-
-        # if self.checkBox_use_overrides.isChecked():
-        #     if self.groupBox_override_actormixer_parent.isChecked():
-        #         parent: str = self.lineEdit_override_actormixer_parent.text()
-        #     if self.groupBox_override_actormixer_mission.isChecked():
-        #         child: str = self.lineEdit_override_actormixer_mission.text()
-        #     if self.groupBox_override_actormixer_persona.isChecked():
-        #         child: str = self.lineEdit_override_actormixer_persona.text()
-
-        if not (path := Path().joinpath(self.wwise.get_originals_path(), originals_import_path)).exists():
-            path.mkdir(parents=True, exist_ok=True)
-
-        result: str = self.wwise.get_guid_actor_mixer_hierarchy()
-        result: str = self.wwise.create_object(result, Defaults.WORK_UNIT, self.DIALOGUE_WORK_UNIT_STR)['id']
-        result: str = self.wwise.create_object(result, Defaults.ACTOR_MIXER, self.DIALOGUE_WORK_UNIT_STR)['id']
-        result: str = self.wwise.create_object(result, Defaults.ACTOR_MIXER, parent)['id']
-        result: str = self.wwise.create_object(result, Defaults.ACTOR_MIXER, child)['id']
-        result: dict = self.wwise.create_object(result, Defaults.ACTOR_MIXER, persona)['id']
-        result: dict = self.wwise.import_files_to_wwise(file,
-                                                        import_location=result,
-                                                        import_language=self.comboBox_languages.currentText(),
-                                                        name=name,
-                                                        originals_sub_folder=originals_import_path,
-                                                        import_operation='createNew'
-                                                        )
-        # self.wwise.set_property(self.wwise.get_sound_from_object_list(result), 'IsStreamingEnabled',
-        #                         self.checkBox_is_streaming.isChecked())
-        return result
-
     def init_wwise(self) -> None:
         """
         Attempt to initialize the wwise object upon successful connection
@@ -346,7 +228,6 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
             result: str = self.wwise.get_project_info()['name']
             self.wwise_status.setText(f'Connected to project {result.title()}')
             self.wwise_status.setToolTip('Connected')
-            # self.populate_languages()
         else:
             self.wwise_status.setText('NO WWISE PROJECT OPEN')
             self.wwise_status.setToolTip('Please open a Wwise project first')
@@ -357,26 +238,6 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         except Exception as e:
             print(e)
             return False
-
-    # def resize_tree(self) -> None:
-    #     """
-    #     Resize the tree widget items
-    #     :return:
-    #     """
-    #     for index in range(self.treeWidget_wwise_info.columnCount()):
-    #         self.treeWidget_wwise_info.resizeColumnToContents(index)
-
-    # def update_wwise_selection(self) -> None:
-    #     """
-    #     Tells wwise to select
-    #     :return:
-    #     """
-    #     if self.treeWidget_wwise_info.currentItem() is not None and self.wwise is not None:
-    #         item: QTreeWidgetItem = self.treeWidget_wwise_info.currentItem()
-    #         self.wwise.select_wwise_object_from_path(item.text(3))
-    #
-    #         if item.checkState(0):
-    #             event_name = item.data(2, Qt.DisplayRole)
 
     def select_unreal_wwise_ak_events_path(self):
         result = QFileDialog.getExistingDirectory(self, 'Select AK Events path in your Unreal Engine project')
@@ -389,6 +250,12 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
             return []
         ak_events: list[dict] = self.wwise.get_all_event_objects()
         return [item.get('name') for item in ak_events]
+
+    def add_selection_to_exclusions_list(self):
+        selected_items: list[QListWidgetItem] = self.listWidget_ak_events.selectedItems()
+        if selected_items:
+            self.ak_event_exclusions = [item.text() for item in selected_items]
+            self.listWidget_exclusions.addItems(self.ak_event_exclusions)
 
     def get_all_ue_ak_events(self, file_path_to_ak_events: str) -> list[str]:
         path: Path = Path(file_path_to_ak_events)
@@ -414,7 +281,7 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         self.label_num_events_in_ue_project.setText(str(len(ue_proj_ak_events)))
         for event in ue_proj_ak_events:
             item: QListWidgetItem = QListWidgetItem(event)
-            if event not in wwise_proj_ak_events:
+            if event not in wwise_proj_ak_events and event not in self.ak_event_exclusions:
                 item.setBackground(QtGui.QColor(150, 0, 0))
                 self.ak_events_to_delete.append(event)
                 self.listWidget_ak_events.addItem(item)
@@ -430,7 +297,7 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         layout.addWidget(QLabel('Delete unused AK events?\nPlease be sure that you\'ve '
                                 'reconciled all ak events in Unreal.\nFailing to do so could cause some events '
                                 'to break the build, since there\'s a chance that the .uasset has a different name '
-                                'than the name used in Wwise'))
+                                'than the name used in Wwise.'))
         buttons = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
         self.confirm.buttonBox = QDialogButtonBox(buttons)
         self.confirm.buttonBox.accepted.connect(self.delete_unused_ak_events)
@@ -446,67 +313,15 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
             self.wwise.delete_event(self.wwise.get_event_guid_from_name(event))
 
     def copy_list_to_clipboard(self):
-        list_items: list[str] = [
-            self.listWidget_ak_events.item(index).text()
-            for index in
-            self.listWidget_ak_events.count()
-        ]
-        QApplication.clipboard().setText('\n'.join(list_items))
-
-    # def load_csv(self) -> None:
-    #
-    #     result = QFileDialog.getOpenFileNames(self, "Select the CSV", self.wwise.get_root_path(), "CSV Files (*.csv)")
-    #     print('csv:', result)
-    #     if self.checkBox_clear_on_csv_loading.isChecked():
-    #         self.treeWidget_wwise_info.clear()
-    #
-    #     if result:
-    #         for file in result[0]:
-    #             self.load_csv_no_prompt(file)
-
-    def load_csv_no_prompt(self, filepath: str) -> DataFrame | None:
-        """
-        Load the csv without using any open file dialogs
-        :param filepath:
-        :return:
-        """
-        data = None
-        try:
-            data = pd.read_csv(filepath, index_col=0)
-        except Exception as e:
-            print(e)
-            return None
-        import_list = [
-            list(i) for i in
-            zip(
-                data['Name'].values, data['SourcePath'].values,
-                self.get_parse_wav_import_file(data['SourcePath'].values),
-                data['Persona'].values
-            )
-        ]
-        self.populate_importing_table(import_list)
-
-    def populate_importing_table(self, import_list: list) -> None:
-
-        for item in import_list:
-            tree_widget_item = QTreeWidgetItem(
-                [
-                    *item[:2],
-                    *item[2],
-                    item[3]
-                ]
-            )
-            tree_widget_item.setFlags(self.QT_WIDGET_TREE_ITEM_FLAGS)
-            self.treeWidget_wwise_info.addTopLevelItem(tree_widget_item)
-        self.resize_tree()
-
-    def diff_q_tree_widget_to_wwise_objects(self):
-        pass
+        list_items: list[str] = [self.listWidget_ak_events.item(index).text()
+                                 for index in
+                                 self.listWidget_ak_events.count()
+                                 ]
+        pyperclip.copy('\n'.join(list_items))
 
     @staticmethod
     def get_parse_wav_import_file(paths: list) -> list:
-        paths = [str(Path(path).parent).split('\\') for path in paths]
-        return paths
+        return [str(Path(path).parent).split('\\') for path in paths]
 
     def convert_widgets_to_prefs_dict(self) -> dict:
         prefs = {}
@@ -518,7 +333,7 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         return prefs
 
     def get_widget_dict_from_value(self, obj) -> dict:
-        name = obj.objectName()
+        name: str = self.get_object_type_name(obj)
         obj_class = obj.__class__
         value: any = self.update_matched_qt_widgets(obj, obj_class)
 
@@ -543,6 +358,8 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
                 value = UIMainWindow._update_q_stacked_widget(edit, obj, value_to_set)
             case QtWidgets.QGroupBox:
                 value = UIMainWindow._update_q_groupbox_widget(edit, obj, value_to_set)
+            case builtins.list:
+                value = UIMainWindow._update_list_of_strings(edit, obj, value_to_set)
             case _:
                 pass
         return value
@@ -600,18 +417,26 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         ]
 
     @staticmethod
-    def _update_q_stacked_widget(edit, obj: QStackedWidget, value_to_set: int) -> int | None:
+    def _update_q_stacked_widget(edit: bool, obj: QStackedWidget, value_to_set: int) -> int | None:
         if edit and value_to_set is not None:
             obj.setCurrentIndex(value_to_set)
         else:
             return obj.currentIndex()
 
     @staticmethod
-    def _update_q_groupbox_widget(edit, obj: QGroupBox, value_to_set: bool) -> bool | None:
+    def _update_q_groupbox_widget(edit: bool, obj: QGroupBox, value_to_set: bool) -> bool | None:
         if edit and value_to_set is not None:
             obj.setChecked(value_to_set)
         else:
             return obj.isChecked()
+
+    @staticmethod
+    def _update_list_of_strings(edit: bool, obj: list[str], value_to_set: list[str]) -> list | None:
+        if edit and value_to_set is not None:
+            obj.clear()
+            obj.extend(value_to_set)
+        else:
+            return obj
 
     def save_prefs(self) -> None:
         print('Saving preferences')
@@ -624,14 +449,26 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
             if not prefs['checkBox_use_persistent_data']['value']:
                 self.checkBox_use_persistent_data.setChecked(False)
                 return
-            for widget in self.PREFERENCES_OBJECTS:
-                if isinstance(prefs, dict) and (name := widget.objectName()) in prefs.keys():
+            for obj in self.PREFERENCES_OBJECTS:
+                name: str = self.get_object_type_name(obj)
+                if isinstance(prefs, dict) and name in prefs.keys():
                     self.update_matched_qt_widgets(
-                        widget,
-                        widget.__class__,
+                        obj,
+                        obj.__class__,
                         value_to_set=prefs[name]['value'],
                         edit=True
                     )
+
+    @staticmethod
+    def get_object_type_name(obj) -> str:
+        name: str = ''
+        if isinstance(obj, QObject):
+            name = obj.objectName()
+        else:
+            for name, value in locals().items():
+                if value is obj:
+                    return name
+        return name
 
     def open_preferences(self) -> None:
         self.stackedWidget.setCurrentIndex(0)
@@ -641,11 +478,6 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
 
     def open_second_page(self) -> None:
         self.stackedWidget.setCurrentIndex(2)
-
-    def remove_tree_widget_rows(self):
-        selected: list[QTreeWidgetItem] = self.treeWidget_wwise_info.selectedItems()
-        for index in selected:
-            self.treeWidget_wwise_info.takeTopLevelItem(index.treeWidget().indexFromItem(index).row())
 
     @staticmethod
     def get_prefs_path() -> str:
@@ -684,11 +516,3 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
     def update_progress_bar_maximum(self, value: int) -> None:
         if self.progress_window:
             self.progress_window.progressBar_import_progress.setMaximum(value)
-
-    @Slot()
-    def enable_table(self) -> None:
-        self.treeWidget_wwise_info.setEnabled(True)
-
-    @Slot()
-    def disable_table(self) -> None:
-        self.treeWidget_wwise_info.setEnabled(False)

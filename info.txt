@@ -1,7 +1,7 @@
 Wwise Unreal AkEvent Differ
-Otherside Entertainment
-Copyright (c) Otherside Entertainment 2024
+Jon Evans
+Copyright (c) Jon Evans 2024
 The original Wwise-Python Tool Template and source code is provided by Jon Evans,
  Copyright 2024 (c) Jon Evans Audio under the Apache License, Version 2.0 for the purposes of distributing internal tools
-Build Date: 20240517.131559
+Build Date: 20260705.001420
 Author: Jon Evans

@@ -1,4 +1,4 @@
-#  Copyright (c) 2024 Otherside Entertainment Inc.
+#  Copyright (c) 2024 Jon Evans.
 #
 #  The original Wwise-Python Tool Template and source code is provided by Jon Evans,
 #  Copyright 2024 (c) Jon Evans Audio under the Apache License, Version 2.0
@@ -529,9 +529,15 @@ class WAAPI(WaapiClient):
     def get_all_event_objects(self, additional_accessor=None):
         return self.get_all_objects_of_type_with_accessor('Event', additional_accessor)
 
+    def get_all_bus_objects(self, additional_accessor=None):
+        return self.get_all_objects_of_type_with_accessor('Bus', additional_accessor)
+
+    def get_all_aux_bus_objects(self, additional_accessor=None):
+        return self.get_all_objects_of_type_with_accessor('AuxBus', additional_accessor)
+
     def get_all_objects_of_type_with_accessor(self, type: str, additional_accessor: str = None):
 
-        if additional_accessor != None:
+        if additional_accessor is not None:
             return_list = Defaults.DEFAULT_WWISE_ACCESSORS.append(additional_accessor)
         else:
             return_list = Defaults.DEFAULT_WWISE_ACCESSORS
@@ -539,9 +545,9 @@ class WAAPI(WaapiClient):
         return self.get_all_objects_of_type(return_list, type=type)
 
     def get_all_objects_of_type(self, return_list: list, type: str = None):
-        if type == None:
+        if type is None:
             type = 'Sound'
-        if return_list == None:
+        if return_list is None:
             return_list = Defaults.DEFAULT_WWISE_ACCESSORS
 
         return self.get_waql(f'$ from project where type = "{type}"', return_list)['return']

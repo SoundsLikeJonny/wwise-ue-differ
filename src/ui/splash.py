@@ -1,4 +1,4 @@
-#  Copyright (c) 2024 Otherside Entertainment Inc.
+#  Copyright (c) 2024 Jon Evans.
 #
 #  The original Wwise-Python Tool Template and source code is provided by Jon Evans,
 #  Copyright 2024 (c) Jon Evans Audio under the Apache License, Version 2.0

@@ -1,4 +1,4 @@
-#  Copyright (c) 2024 Otherside Entertainment Inc.
+#  Copyright (c) 2024 Jon Evans
 #
 #  The original Wwise-Python Tool Template and source code is provided by Jon Evans,
 #  Copyright 2024 (c) Jon Evans Audio under the Apache License, Version 2.0
@@ -23,15 +23,15 @@ import dataclasses
 class Info:
     NOTIFICATION_TIME: int = 50
     PROJECT_TITLE: str = 'Wwise Unreal AkEvent Differ'
-    COMPANY: str = 'Otherside Entertainment'
-    COPYRIGHT: str = 'Copyright (c) Otherside Entertainment 2024'
+    COMPANY: str = 'Jon Evans'
+    COPYRIGHT: str = 'Copyright (c) Jon Evans 2024'
     NOTICE: str = 'The original Wwise-Python Tool Template and source code is provided by Jon Evans,\n\
  Copyright 2024 (c) Jon Evans Audio under the Apache License, Version 2.0\
  for the purposes of distributing internal tools'
     RESOURCES_PATH: str = 'resources'
     ICON_PATH: str = f':/{RESOURCES_PATH}/ose_favicon.png'
     SPLASH_PATH: str = f':/{RESOURCES_PATH}/ose_splash.png'
-    DOCS_LINK: str = 'https://otherside.atlassian.net/wiki/spaces/TVT/pages/3372482581/Wwise+Unreal+AkEvent+Differ'
+    DOCS_LINK: str = ''
 
 
 @dataclasses.dataclass

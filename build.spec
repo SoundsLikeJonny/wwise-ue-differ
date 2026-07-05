@@ -1,5 +1,5 @@
 # -*- mode: python ; coding: utf-8 -*-
-#  Copyright (c) 2024 Otherside Entertainment Inc.
+#  Copyright (c) 2024 Jon Evans.
 #
 #  The original Wwise-Python Tool Template and source code is provided by Jon Evans,
 #  Copyright 2024 (c) Jon Evans Audio under the Apache License, Version 2.0
@@ -28,9 +28,9 @@ from project_info import Info
 import resources
 
 
-icon_name = Path().absolute().__str__()
-icon_name = f'{icon_name}{Info.ICON_PATH[1:]}'
-print(icon_name)
+#icon_name = Path().absolute().__str__()
+#icon_name = f'{icon_name}{Info.ICON_PATH[1:]}'
+#print(icon_name)
 
 current_date_time = str(datetime.now().strftime("%Y_%m_%d-%H_%M_%S"))
 
@@ -104,7 +104,8 @@ exe = EXE(pyz,
           target_arch=None,
           codesign_identity=None,
           entitlements_file=None,
-          icon=icon_name )
+#          icon=icon_name
+          )
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,

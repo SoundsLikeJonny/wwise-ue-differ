@@ -1,4 +1,4 @@
-#  Copyright (c) 2024 Otherside Entertainment Inc.
+#  Copyright (c) 2024 Jon Evans.
 #
 #  The original Wwise-Python Tool Template and source code is provided by Jon Evans,
 #  Copyright 2024 (c) Jon Evans Audio under the Apache License, Version 2.0
@@ -251,6 +251,18 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         ak_events: list[dict] = self.wwise.get_all_event_objects()
         return [item.get('name') for item in ak_events]
 
+    def get_all_wwise_ak_busses(self) -> list[str]:
+        if not self.wwise.is_connected():
+            return []
+        ak_events: list[dict] = self.wwise.get_all_bus_objects()
+        return [item.get('name') for item in ak_events]
+
+    def get_all_wwise_ak_aux_busses(self) -> list[str]:
+        if not self.wwise.is_connected():
+            return []
+        ak_events: list[dict] = self.wwise.get_all_aux_bus_objects()
+        return [item.get('name') for item in ak_events]
+
     def add_selection_to_exclusions_list(self):
         selected_items: list[QListWidgetItem] = self.listWidget_ak_events.selectedItems()
         if selected_items:
@@ -275,13 +287,21 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
     def diff_ue_ak_events_folder_against_wwise_events(self):
         self.listWidget_ak_events.clear()
         self.ak_events_to_delete.clear()
-        wwise_proj_ak_events: list[str] = self.get_all_wwise_ak_events()
-        ue_proj_ak_events: list[str] = self.get_all_ue_ak_events(self.lineEdit_ak_events_folder_in_ue.text())
-        self.label_num_events_in_wwise_project.setText(str(len(wwise_proj_ak_events)))
-        self.label_num_events_in_ue_project.setText(str(len(ue_proj_ak_events)))
-        for event in ue_proj_ak_events:
+        wwise_proj_ak_objects: list[str] = []
+        match self.comboBox_diff_type.currentText():
+            case "events":
+                wwise_proj_ak_objects: list[str] = self.get_all_wwise_ak_events()
+            case 'busses':
+                wwise_proj_ak_objects: list[str] = self.get_all_wwise_ak_busses()
+            case 'aux busses':
+                wwise_proj_ak_objects: list[str] = self.get_all_wwise_ak_aux_busses()
+
+        ue_proj_ak_assets: list[str] = self.get_all_ue_ak_events(self.lineEdit_ak_events_folder_in_ue.text())
+        self.label_num_events_in_wwise_project.setText(str(len(wwise_proj_ak_objects)))
+        self.label_num_events_in_ue_project.setText(str(len(ue_proj_ak_assets)))
+        for event in ue_proj_ak_assets:
             item: QListWidgetItem = QListWidgetItem(event)
-            if event not in wwise_proj_ak_events and event not in self.ak_event_exclusions:
+            if event not in wwise_proj_ak_objects and event not in self.ak_event_exclusions:
                 item.setBackground(QtGui.QColor(150, 0, 0))
                 self.ak_events_to_delete.append(event)
                 self.listWidget_ak_events.addItem(item)
@@ -331,6 +351,13 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
             if obj_dict:
                 prefs.update(obj_dict)
         return prefs
+
+    def update_progress_state(self):
+        """Update UI elements to reflect current progress state"""
+        self.tray.showMessage("Updating....")
+        if self.wwise and self.wwise.is_connected():
+            if self.progress_window:
+                self.progress_window.label_progress_item.setText("Updating progress")
 
     def get_widget_dict_from_value(self, obj) -> dict:
         name: str = self.get_object_type_name(obj)

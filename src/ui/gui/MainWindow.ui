@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>848</width>
-    <height>831</height>
+    <height>825</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -140,7 +140,7 @@
            <item row="5" column="6">
             <widget class="QCheckBox" name="checkBox_only_show_invalid">
              <property name="text">
-              <string>Only show invalid</string>
+              <string>Only show diff</string>
              </property>
             </widget>
            </item>
@@ -246,7 +246,7 @@
                <item>
                 <widget class="QLabel" name="label_5">
                  <property name="text">
-                  <string>Number of Ak Events to delete: </string>
+                  <string>Number of Ak Events to delete from Wwise: </string>
                  </property>
                 </widget>
                </item>

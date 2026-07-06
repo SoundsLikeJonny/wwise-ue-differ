@@ -1,6 +1,8 @@
 # Wwise Unreal Differ
 A simple tool for comparing what's in the Events folder in Unreal and highlighting redundancies for deletion in Wwise.
 
+<img width="615" height="561" alt="image" src="https://github.com/user-attachments/assets/171f42a0-aa5b-4bcb-ac43-82521ae7554c" />
+
 # The previous workflow
 As a game project evolves over time, audio assets will be added to fit the new game features. 
 But they don't always get removed when they're no longer used. 

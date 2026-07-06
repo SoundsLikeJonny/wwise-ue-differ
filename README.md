@@ -19,7 +19,7 @@ A tedious, time-consuming task, depending on how many files are removed.
 A simple tool to compare the audio events from the editor to the audio events in the Wwise middleware.
 A user can get an overview of all the Wwise events that aren't in use by the editor, and with a single click remove them from Wwise.
 
-<img width="1280" height="720" alt="Wwise-UE-Differ_Usage" src="https://github.com/user-attachments/assets/48cf63cf-3d9b-4b63-b70f-ca3367285073" />
+<img src="https://github.com/user-attachments/assets/48cf63cf-3d9b-4b63-b70f-ca3367285073" />
 
 # How to use 
 1. Remove all audio assets from the editor.

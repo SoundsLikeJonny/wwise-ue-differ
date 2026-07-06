@@ -299,15 +299,18 @@ class UIMainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         ue_proj_ak_assets: list[str] = self.get_all_ue_ak_events(self.lineEdit_ak_events_folder_in_ue.text())
         self.label_num_events_in_wwise_project.setText(str(len(wwise_proj_ak_objects)))
         self.label_num_events_in_ue_project.setText(str(len(ue_proj_ak_assets)))
-        for event in ue_proj_ak_assets:
+        self.add_list_widget_items(ue_proj_ak_assets, wwise_proj_ak_objects)
+        self.label_number_of_events_to_delete.setText(str(len(self.ak_events_to_delete)))
+
+    def add_list_widget_items(self, ue_proj_ak_assets: list[str], wwise_proj_ak_objects: list[str]):
+        for event in wwise_proj_ak_objects:
             item: QListWidgetItem = QListWidgetItem(event)
-            if event not in wwise_proj_ak_objects and event not in self.ak_event_exclusions:
+            if event not in ue_proj_ak_assets and event not in self.ak_event_exclusions:
                 item.setBackground(QtGui.QColor(150, 0, 0))
                 self.ak_events_to_delete.append(event)
                 self.listWidget_ak_events.addItem(item)
             if not self.checkBox_only_show_invalid.isChecked():
                 self.listWidget_ak_events.addItem(item)
-        self.label_number_of_events_to_delete.setText(str(len(self.ak_events_to_delete)))
 
     def confirm_delete_unused_ak_events(self) -> None:
         if not self.wwise.is_connected():
